@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+{% block Contenido %}
+{% load customfilter %}
+
+    <div class="container-fluid">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-14 table-responsive">
+            <div class="card card-default rounded-0 shadow ">
+               <div class="card-header">
+                    <h7>Ingrese las encomiendas que mandan por vehículo despachado</h7>
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <h4 class="card-title fw-bold text-wrap">Gestión de Encomiendas</h4>
+                        <div class="tools">
+                            <button type="button" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='adiccion'><i class="fa fa-plus"></i>Adicionar</button>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="card-body">
+                <div class="container-fluid">
+                    <table class="table table-bordered" id="encomienda-lista">
+                        <thead>
+                          <tr class="bg-gradient bg-secondary bg-opacity-50 text-light">
+                            <th class="px-1 py-1 text-center">Despachador</th>
+
+                            <th class="px-1 py-1 text-center">Viaje Programado</th>
+                            <th class="px-1 py-1 text-center">Remitente</th>
+
+                            <th class="px-1 py-1 text-center">Telefóno</th>
+                            <th class="px-1 py-1 text-center">Destinatario</th>
+
+                            <th class="px-1 py-1 text-center">Telefóno</th>
+                            <th class="px-1 py-1 text-center">Costo Envio</th>
+
+                            <th class="px-1 py-1 text-center">Estado</th>
+
+                            <th class="px-1 py-1 text-center">Acción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for encomienda in encomiendas %}
+
+                        <tr>
+                            <td class="px-2 py-1 align-middle font-weight-bold small">{{ user.username }}</td>
+                            {% comment %}  llamar del modelo programacion.codigo {% endcomment %}
+                            <td class="px-1 py-1 align-middle"> <div class="lh-1"> {{ encomienda.programacion }} </div></td>
+
+                            <td class="px-2 py-1 align-middle">
+                                <div class="font-weight-bold small"> {{ encomienda.nombre_envio }}
+                                    <i class="success"> {{ encomienda.cedula_envio|intcomma }} </i> </div>
+                            </td>
+
+                            <td class="px-2 py-1 align-middle">{{ encomienda.telefono_envio }}</td>
+
+
+                            <td class="px-2 py-1 align-middle">
+                                <div class="font-weight-bold small">   {{ encomienda.nombre_recibido }}
+                                    <i class="success"> {{ encomienda.cedula_recibido|intcomma }} </i> </div>  </td>
+
+                            <td class="px-2 py-1 align-middle">{{ encomienda.telefono_recibido }}</td>
+
+                            <td class="px-2 py-1 align-middle font-weight-bold small"> ${{ encomienda.costo_envio|intcomma }}</td>
+
+
+                            <td class="px-2 py-1 align-middle text-center">
+                                 <span class="badge {{ semaforo_3|dict_key:encomienda.estado}} bg-gradient rounded-pill px-2">
+                                    {{ encomienda.get_estado_display }} </span>
+                            </td>
+                            <td class="px-2 py-1 align-middle text-center">
+                                <a class="btn btn-outline-success btn-sm edit-data" href="javascript:void(0)" data-id="{{ encomienda.pk }}" title="Editar">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ encomienda.pk }}" title="Eliminar">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock Contenido %} {% block ScriptBlock %}
+<script>
+    $(function() {
+        $('#adiccion').click(function() {
+            uni_modal('<i class="fa fa-plus"></i> Adicionar Encomienda', '{% url "adm-encomienda" %}', 'modal-md')
+        })
+        $('.edit-data').click(function() {
+            uni_modal('<i class="fa fa-edit"></i> Editar Encomienda', '{% url "adm-encomienda" %}/' + $(this).attr('data-id'), 'modal-md')
+        })
+        $('.delete-data').click(function()
+
+        {
+            _conf("¿Deseas eliminar esta Encomienda del sistema?", "eliminar_encomienda", [$(this).attr('data-id')])
+        })
+
+        $('#encomienda-lista').DataTable({
+            columnDefs: [{
+                orderable: false,
+                targets: 8
+            }],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+
+            initComplete: function(settings, json) {
+                $('table td, table th').addClass('px-2 py-1')
+            },
+            drawCallback: function(settings) {
+                $('table td, table th').addClass('px-2 py-1')
+            }
+        })
+    })
+
+    function eliminar_encomienda($id) {
+        start_loader();
+        var _this = $(this)
+        $('.err-msg').remove();
+        var el = $('<div>')
+        el.addClass("alert alert-danger err-msg")
+        el.hide()
+        $.ajax({
+            url: '{% url "eliminar-encomienda" %}',
+            headers: {
+                'X-CSRFToken': "{{csrf_token}}"
+            },
+            method: 'POST',
+            data: {
+                id: $id
+            },
+            dataType: 'json',
+            error: err => {
+                console.log(err)
+                el.text('An error occurred.')
+                el.show('slow')
+                end_loader()
+            },
+            success: function(resp) {
+                if (resp.status == 'success') {
+                    location.reload()
+                } else if (!!resp.msg) {
+                    el.text('An error occurred.')
+                    el.show('slow')
+                } else {
+                    el.text('An error occurred.')
+                    el.show('slow')
+                }
+                end_loader()
+            }
+        })
+    }
+</script>
+{% endblock ScriptBlock %}

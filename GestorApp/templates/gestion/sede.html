@@ -1,0 +1,128 @@
+{% extends 'core/base.html' %}
+{% block Contenido %}
+{% load customfilter %}
+
+<div class="container-fluid">
+       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card card-default table-responsive">
+                <div class="card-header">
+                    <h7>Ingrese las Sedes(terminales, sucursales o paradas) habilitadas para recoger y bajar pasajeros:</h7>
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <h4 class="card-title fw-bold text-wrap">Sedes</h4>
+                        <div class="tools">
+                            <button type="button" class="btn btn-primary rounded-0 bg-gradient btn-sm" id='adiccion'><i class="fa fa-plus"></i>Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="container-fluid table-responsive" >
+                        <table class="table table-bordered" id="sede-list">
+                            <thead>
+                            <tr class="bg-gradient bg-secondary bg-opacity-50 text-light">
+                                <th class="px-2 py-2 text-center">#</th>
+                                <th class="px-2 py-2 text-center">Fecha de Creación</th>
+                                <th class="px-2 py-2 text-center">Sede</th>
+                                <th class="px-2 py-2 text-center">Tipo</th>
+                                <th class="px-2 py-2 text-center">Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for sede in sedes %}
+                                <tr>
+                                    <td class="px-2 py-1 align-middle">{{ forloop.counter }}</td>
+                                    <td class="px-2 py-1 align-middle">{{ sede.fecha_creado }}</td>
+                                    <td class="px-2 py-1 align-middle">{{ sede.sede }}</td>
+
+                                    <td class="px-1 py-1 align-middle text-center">
+                                <span class="badge {{ semaforo|dict_key:sede.tipo}} bg-gradient rounded-pill px-2">
+                                    {{ sede.get_tipo_display }}
+                                </span>
+                                    </td>
+
+                                    <td class="px-2 py-1 align-middle text-center">
+                                        <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ sede.pk }}" title="Editar">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ sede.pk }}" title="Eliminar">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock Contenido %} {% block ScriptBlock %}
+    <script>
+        $(function() {
+            $('#adiccion').click(function() {
+                uni_modal('<i class="fa fa-plus"></i> Adicionar Sede', '{% url "adm-sede" %}', 'modal-md')
+            })
+            $('.edit-data').click(function() {
+                uni_modal('<i class="fa fa-edit"></i> Editar Sede', '{% url "adm-sede" %}/' + $(this).attr('data-id'), 'modal-md')
+            })
+            $('.delete-data').click(function() {
+                _conf("¿Deseas eliminar esta Empresa del sistema?", "eliminar_sede", [$(this).attr('data-id')])
+            })
+
+            $('#sede-list').DataTable({
+                columnDefs: [{
+                    orderable: false,
+                    targets: 4
+                }],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                initComplete: function(settings, json) {
+                    $('table td, table th').addClass('px-2 py-1')
+                },
+                drawCallback: function(settings) {
+                    $('table td, table th').addClass('px-2 py-1')
+                }
+            })
+        })
+
+        function eliminar_sede($id) {
+            start_loader();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            $.ajax({
+                url: '{% url "eliminar-sede" %}',
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                method: 'POST',
+                data: {
+                    id: $id
+                },
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    el.text('An error occurred.')
+                    el.show('slow')
+                    end_loader()
+                },
+                success: function(resp) {
+                    if (resp.status == 'success') {
+                        sede.reload()
+                    } else if (!!resp.msg) {
+                        el.text('An error occurred.')
+                        el.show('slow')
+                    } else {
+                        el.text('An error occurred.')
+                        el.show('slow')
+                    }
+                    end_loader()
+                }
+            })
+        }
+    </script>
+{% endblock ScriptBlock %}

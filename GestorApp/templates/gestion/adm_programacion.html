@@ -1,0 +1,149 @@
+{% load customfilter %}
+
+<div class="container-fluid">
+    <form action="" id="programacion-form">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ programacion.id }}">
+        <input type="hidden" name="codigo" value="1">
+
+        <div class="form-group mb-3 ">
+            <label for="conductor" class="control-label">Conductor:</label>
+            <select name="conductor" id="conductor" class="form-select select2 rounded-0">
+                {% if not programacion.conductor %}
+                <option selected></option>
+                {% else %}
+                <option ></option>
+                {% endif %}
+                {% for conductor in conductores %}
+                {% if programacion.conductor.id == conductor.id %}
+                <option value="{{ conductor.id }}" selected>{{ conductor }}</option>
+                {% else %}
+                <option value="{{ conductor.id }}" >{{ conductor }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+         <div class="form-group mb-3">
+            <label for="programacion" class="control-label">Horario Programado:</label>
+            <input class="form-control rounded-0" name="programacion" id="programacion" type="datetime-local" value="{{ programacion.programacion|date:'Y-m-d\TH:i' }}" required>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="vehiculo" class="control-label">Vehículo</label>
+            <select name="vehiculo" id="vehiculo" class="form-select select2 rounded-0">
+                {% if not vehiculo.numero_veh %}
+                <option selected></option>
+                {% else %}
+                <option ></option>
+                {% endif %}
+                {% for vehiculo in vehiculos %}
+                {% if programacion.vehiculo.id == vehiculo.id %}
+                <option value="{{ vehiculo.id }}" selected>{{ vehiculo }}</option>
+                {% else %}
+                <option value="{{ vehiculo.id }}" >{{ vehiculo }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="origen" class="control-label">Origen:</label>
+            <select name="origen" id="origen" class="form-select select2 rounded-0">
+                {% if not programacion.sede %}
+                <option selected></option>
+                {% else %}
+                <option ></option>
+                {% endif %}
+                {% for sede in sedes %}
+                {% if programacion.origen.id == sede.id %}
+                <option value="{{ sede.id }}" selected>{{ sede }}</option>
+                {% else %}
+                <option value="{{ sede.id }}" >{{ sede }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="destino" class="control-label">Destino:</label>
+            <select name="destino" id="destino" class="form-select select2 rounded-0">
+                {% if not programacion.sede %}
+                <option selected></option>
+                {% else %}
+                <option ></option>
+                {% endif %}
+                {% for sede in sedes %}
+                {% if programacion.destino.id == sede.id %}
+                <option value="{{ sede.id }}" selected>{{ sede }}</option>
+                {% else %}
+                <option value="{{ sede.id }}" >{{ sede }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="precio" class="control-label">Precio:</label>
+            <input class="form-control rounded-0" name="precio" id="precio" type="number" step="any" value="{{ programacion.precio }}" required>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="estado" class="control-label">Estado:</label>
+                <select name="estado" id="estado" class="form-select rounded-0">
+                {% with programacion_estado=programacion.estado %}
+					<option value="0" {% if programacion_estado == 0 %}selected{% endif %}>Cancelado</option>
+                    <option value="1" {% if programacion_estado == 1 %}selected{% endif %}>Programado</option>
+                    <option value="2" {% if programacion_estado == 2 %}selected{% endif %}>Despachado</option>
+                {% endwith %}
+            </select>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('.select2').select2({
+            width:"100%",
+            placeholder: "Por favor hacer una selección",
+            dropdownParent:$('#uni_modal')
+        })
+        $('#programacion-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                url: "{% url 'guardar-programacion' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured ", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        el.removeClass("alert alert-danger err-msg ")
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.html(resp.msg)
+                    } else {
+                        el.text("An error occured ", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal ").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>

@@ -1,0 +1,107 @@
+{% extends 'core/base.html' %}
+
+{% block Contenido %}
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card card-default rounded-0 shadow ">
+            <div class="card-header">
+                <h7>Consulte nuestros siguientes viajes en este listado:</h7>
+                <div class="d-flex w-100 align-items-center justify-content-between">
+
+                    <h4 class="card-title fw-bold align-content-center">
+                        {% if not is_searched %}
+                        Viajes Programados
+                        {% else %}
+                        Resultados||Viajes Programados
+                        {% endif %}</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container-fluid">
+                    {% if is_searched %}
+                        <fieldset>
+                            <legend>Resultados</legend>
+                            <dl class="row my-0">
+                                <dt class="col-auto fw-bold">Fecha:</dt>
+                                <dd class="col-auto flex-grow-1 flex-shrink-1">{{ data.date }}</dd>
+                            </dl>
+                            <dl class="row my-0">
+                                <dt class="col-auto fw-bold">Origen:</dt>
+                                <dd class="col-auto flex-grow-1 flex-shrink-1">{{ data.origen.sede }}</dd>
+                            </dl>
+                            <dl class="row my-0">
+                                <dt class="col-auto fw-bold">Destino:</dt>
+                                <dd class="col-auto f
+                                lex-grow-1 flex-shrink-1">{{ data.destino.sede }}</dd>
+                            </dl>
+                        </fieldset>
+                    {% endif %}
+                    <table class="table table-bordered" id="programado-lista">
+                        <thead>
+                        <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
+                            <th class="px-2 py-2 text-center">#</th>
+                            <th class="px-2 py-2 text-center">Código Viaje</th>
+                            <th class="px-2 py-2 text-center">Programación/Vehículos</th>
+                            <th class="px-2 py-2 text-center">Ruta (Origen - Destino)</th>
+                            <th class="px-2 py-2 text-center">Precio</th>
+                            <th class="px-2 py-2 text-center">Estado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for programacion in programaciones %}
+                            <tr>
+                                <td class="px-2 py-1 align-middle ">{{ forloop.counter }}</td>
+                                <td class="px-2 py-1 align-middle text-center"> {{ programacion.codigo }} </td>
+                                <td class="px-2 py-1 align-middle">
+                                    <div class="lh-1">
+                                        <div> {{ programacion.programado|date:"Y-m-d h:i A" }} </div>
+                                        <div> {{ programacion.vehiculo.numero_veh }}</div>
+                                            <small class="text-opacity-25">{{ programacion.conductor }}</small>
+                                        <h7  class="text-opacity-100 initialism"> <em> <small class="text-muted">{{ programacion.vehiculo }}</small> </em> </h7>
+                                    </div>
+                                </td>
+                                <td class="px-2 py-1 align-middle">
+                                    <div class="lh-1 text-sm-center">
+                                        <div>{{ programacion.origen }}</div>
+                                        <div> <small>a</small> {{ programacion.destino }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-2 py-1 align-middle text-end"> $ {{ programacion.precio }} </td>
+                                <td class="px-1 py-1 align-middle text-center">
+                                    {% if programacion.estado == '1' %}
+                                        <span class="badge bg-primary bg-gradient rounded-pill px-2">Programado</span> {% else %}
+                                        <span class="badge bg-danger bg-gradient rounded-pill px-2">Cancelado</span> {% endif %}
+                                </td>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock Contenido %} {% block ScriptBlock %}
+    <script>
+        $(function () {
+            $('.prog-data').click(function () {
+                uni_modal("Progrmacion", '{%  url "adm-programacion" %}/' + $(this).attr('data-id'), 'mid-large')
+            })
+            $('#programado-lista').DataTable({
+                columnDefs: [{
+                    orderable: false,
+                    targets:5
+                }],
+                "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                 },
+
+                initComplete: function (settings, json) {
+                    $('table td, table th').addClass('px-2 py-1')
+                },
+                drawCallback: function (settings) {
+                    $('table td, table th').addClass('px-2 py-1')
+                }
+            })
+        })
+    </script>
+{% endblock ScriptBlock %}

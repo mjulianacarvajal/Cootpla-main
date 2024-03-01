@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %} {% block Contenido %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-10 col-sm-12 col-xs-12">
+            <div class="card shadow rounded-0">
+                <div class="card-header">
+                    <div class="h5 card-title fw-bold text-capitalize">Perfil <strong>{{ user.first_name }} </strong> </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <dl>
+                                    <dt class="text-muted">Nombre</dt>
+                                    <dd class="ps-4 text-dark">{{ user.first_name }} {{ user.last_name }}</dd>
+                                    <dt class="text-muted">Correo Electrónico</dt>
+                                    <dd class="ps-4 text-dark">{{ user.email }}</dd>
+                                    <dt class="text-muted">Usuario Asignado</dt>
+                                    <dd class="ps-4 text-dark">{{ user.username }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 text-end justify-content-end">
+                            {% if user.username == "admin" %}
+                        <a href="{% url 'registrar-usuario' %}" class="btn btn btn-outline-success btn-sm bg-gradient rounded-0 me-2">Registrar nuevo usuario</a>
+                            {% endif %}
+                        <a href="{% url 'actualizar_contrasena' %}" class="btn btn btn-light border btn-sm bg-gradient rounded-0 me-2">Actualizar contraseña</a>
+                        <a href="{% url 'actualizar_perfil' %}" class="btn btn btn-primary btn-sm bg-gradient rounded-2">Actualizar perfil</a>
+                    </div>
+
+                </div>
+                <div class="card-header">
+                    <div class="h5 card-title fw-bold  align-content-center"><em> Manual de Usuario </em>
+                        <div class="py-4 text-center">
+                            <a role="spinbutton" class="btn btn-success btn-lg rounded-0 my-3" href="#"  download="manual.pdf">Manual de usuario </a>
+                        </div>
+                    </div>
+                    <div class="text-muted -align-right"> Recuerde que su perfil es personal e instrasferible, la información ingresada es de
+                        carácter informativo con los pasajeros.</label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock Contenido %}

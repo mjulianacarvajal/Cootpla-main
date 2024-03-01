@@ -1,0 +1,70 @@
+{% load customfilter %}
+<div class="container-fluid">
+    <form action=" " id="sede-form">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ sede.id }}">
+        <div class="form-group mb-3">
+            <label for="sede" class="control-label">Sede</label>
+            <input class="form-control rounded-0" name="sede" id="sede" type="text" value="{{ sede.sede }}" required>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="tipo" class="control-label">Tipo</label>
+            <select name="tipo" id="tipo" class="form-select rounded-0">
+                {% with sede_tipo=sede.tipo %}
+                    <option value="1" {% if sede_tipo == 1 %}selected{% endif %}>Terminal</option>
+                    <option value="2" {% if sede_tipo == 2 %}selected{% endif %}>Oficina o Patio</option>
+                    <option value="3" {% if sede_tipo == 3 %}selected{% endif %}>Paradero</option>
+                {% endwith %}
+            </select>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+
+        $('#sede-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                url: "{% url 'guardar-sede' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured ", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        el.removeClass("alert alert-danger err-msg ")
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.html(resp.msg)
+                    } else {
+                        el.text("An error occured ", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal ").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>

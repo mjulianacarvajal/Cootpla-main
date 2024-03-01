@@ -1,0 +1,104 @@
+{% load customfilter %}
+<div class="container-fluid">
+    <form action=" " id="vehiculo-form">
+        {% csrf_token %}
+             <input type="hidden" name="id" value="{{ vehiculo.id }}">
+        <div class="form-group mb-3 ">
+            <label for="propietario" class="control-label">Propietario</label>
+            <select name="propietario" id="propietario" class="form-select rounded-0">
+                {% if not vehiculo.propietario %}
+                <option selected></option>
+                {% else %}
+                <option ></option>
+                {% endif %}
+                {% for propietario in propietarios %}
+                {% if vehiculo.propietario.id == propietario.id %}
+                <option value="{{ propietario.id }}" selected>{{ propietario }}</option>
+                {% else %}
+                <option value="{{ propietario.id }}">{{ propietario }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="numero_veh" class="control-label">Vehiculo # </label>
+            <input class="form-control rounded-0" name="numero_veh" id="numero_veh" type="text" value="{{ vehiculo.numero_veh}}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="placa_veh" class="control-label">Número de Placa</label>
+            <input class="form-control rounded-0" name="placa_veh" id="placa_veh" type="text" value="{{ vehiculo.placa_veh }}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="asientos" class="control-label">Asientos</label>
+            <input class="form-control rounded-0" name="asientos" id="asientos" type="number" value="{{ vehiculo.asientos }}" required>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="estado" class="control-label">Estado</label>
+            <select name="estado" id=estado class="form-select rounded-0">
+                {% if not vehiculo.estado or vehiculo.estado == '1' %}
+                <option value="1" selected>Activo</option>
+                {% else %}
+                <option value="1" >Activo</option>
+                {% endif %}
+                {% if vehiculo.estado == '2' %}
+                <option value="2" selected>Inactivo</option>
+                {% else %}
+                <option value="2" >Inactivo</option>
+                {% endif %}
+            </select>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('#propietario').select2({
+            width:"100%",
+            placeholder: "Por favor seleccione un Propietario",
+            dropdownParent:$('#uni_modal')
+        })
+        $('#vehiculo-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                url: "{% url 'guardar-vehiculo' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured ", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        el.removeClass("alert alert-danger err-msg ")
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.html(resp.msg)
+                    } else {
+                        el.text("An error occured ", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal ").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>

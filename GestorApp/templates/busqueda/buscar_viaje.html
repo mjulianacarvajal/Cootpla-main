@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}{% load static %}{% block Contenido %}
+<style>
+    main {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+    }
+</style>
+<div class="d-flex flex-column w-100 justify-content-center align-items-center">
+   
+    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+        <div class="card card-default rounded-0 shadow">
+            <div class="card-header">
+                <h4 class="card-title"><b>Buscar Viajes Programados</b></h4>
+            </div>
+            <div class="card-body">
+                <div class="container-fluid">
+                    <form id="login-user" method="POST" action="{% url 'viajes-programados-pagina' %}">
+                        {% csrf_token %}
+                        <div class="mdc-layout-grid">
+                            <div class="mdc-layout-grid__inner">
+                                <div class="form-group mb-3">
+                                    <label for="date" class="control-label">Fecha</label>
+                                    <input type="date" class="form-control rounded-0" min = '{{ today }}' autofocus name="date" id="date" required="required">
+                                </div>
+                                <div class="form-group mb-3 ">
+                                    <label for="origen" class="control-label">Origen</label>
+                                    <select name="origen" id="origen" class="form-select select2 rounded-0">
+                                        <option selected></option>
+                                        {% for sede in sedes %}
+                                        <option value="{{ sede.id }}" >{{ sede }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3 ">
+                                    <label for="destino" class="control-label">Destino</label>
+                                    <select name="destino" id="destino" class="form-select select2 rounded-0">
+                                        <option selected></option>
+                                        {% for sede in sedes %}
+                                        <option value="{{ sede.id }}" >{{ sede }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div class="col-md-4">
+                                        </div>
+                                        <button class="btn btn-sm rounded-0 btn-primary">
+                                               Buscar
+                                            </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock Contenido %} {% block ScriptBlock %}
+<script>
+    $(function() {
+        $('.select2').select2({
+            width:"100%",
+            placeholder: "Por favor seleccionar una sede",
+        });
+             // Declarar un conjunto para almacenar selecciones previas
+        const seleccionPrevias = new Set();
+
+            // Función para verificar la selección
+        function checkDuplicateSelection() {
+            const selectElement = document.getElementById("destino");
+            const selectedValue = selectElement.value;
+
+            if (seleccionPrevias.has(selectedValue)) {
+                alert("¡Ya has seleccionado esta opción!");
+                // Deseleccionar la opción duplicada
+                selectElement.value = "";
+            } else {
+                // Agregar la selección al conjunto de selecciones previas
+                seleccionPrevias.add(selectedValue);
+            }
+        }
+    });
+
+</script>
+
+{% endblock ScriptBlock %}
+
+
+
+
+

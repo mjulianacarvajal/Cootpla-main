@@ -1,0 +1,110 @@
+{% load static %}
+<header>
+    <!-- Intro settings -->
+    <style>
+        #intro {
+            /* Margin to fix overlapping fixed navbar */
+            margin-top: 58px;
+        }
+        
+        @media (max-width: 991px) {
+            #intro {
+                /* Margin to fix overlapping fixed navbar */
+                margin-top: 45px;
+            }
+        }
+        .navbar-custom {
+            background-color: #eaeed6; /* Color gris claro */
+        }
+
+
+    </style>
+
+    <!-- Navbar -->
+{#         <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient fixed-top shadow border-bottom navbar-custom">#}
+    <nav class="navbar navbar-expand-lg navbar-cian bg-cian bg-gradient fixed-top shadow border-bottom navbar-custom">
+        <div class="container">
+            <!-- Navbar brand -->
+            <a class="navbar-brand" target="_blank" href="{% url 'inicio' %}">
+                <img src="{{ MEDIA_URL }}media/default/logo.png" height="16" alt="{{ MEDIA_URL }}" loading="lazy" class="bg-dark bg-gradient px-1 py-1" style="margin-top: -3px;" />
+            </a>
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbar01" aria-controls="navbar01" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+            <div class="collapse navbar-collapse" id="navbar01">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="topNav">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'inicio' %}">Inicio</a>
+                    </li>
+                    {% if not user.id %}
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'buscar-viaje-programado' %}">Buscar Viaje</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'viajes-programados-pagina' %}">Viajes Programados</a>
+                    </li>
+                      <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'contacto' %}">Contacto</a>
+                    </li>
+
+                    {% endif %}
+                    {% if user.id %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'sede-pagina' %}">Sedes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'vehiculo-pagina' %}">Vehículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'programacion-pagina' %}">Programación</a>
+                    </li>
+                      <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'encomienda-pagina' %}">Encomiendas</a>
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+                <ul class="navbar-nav d-flex flex-row">
+                    {% if user.id %} {% if user.profile.user_type == 1 %} {% endif %}
+                    <li class="nav-item me-3 me-lg-0">
+                        <a class="nav-link" href="{% url 'perfil' %}">
+                            <span class="me-1"><img src="{{ MEDIA_URL }}media/default/default-avatar.png" alt="User Avatar" id="user-avatar" class="img-thumbnail rounded-circle"></span>Bienvenido, {{ user.first_name }} {{user.last_name}}
+                        </a>
+                    </li>
+                    <li class="nav-item me-3 me-lg-0">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out">  </i> Salir</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item me-3 me-lg-0">
+                        <a class="nav-link" href="{% url 'login' %}"><i class="fa fa-user" aria-hidden="true"> </i> Logeo </a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar -->
+
+    <!-- Jumbotron -->
+    <div id="intro" class="pt-2 text-center bg-light">
+        <!-- <h1 class="mb-3 h2">Learn Bootstrap 5 with MDB</h1>
+        <p class="mb-3">Best & free guide of responsive web design</p>
+        <a class="btn btn-primary m-2" href="https://www.youtube.com/watch?v=c9B4TPnak1A" role="button" rel="nofollow" target="_blank">Start tutorial</a>
+        <a class="btn btn-primary m-2" href="https://mdbootstrap.com/docs/standard/" target="_blank" role="button">Download MDB UI KIT</a> -->
+    </div>
+    <!--/ Jumbotron -->
+    </header>
+<script>
+    $(function() {
+        $('#topNav .nav-link').each(function() {
+            var current = '{{ request.get_full_path | urlencode }}'
+            if (current == $(this).attr('href')) {
+                $(this).parent().addClass('active')
+            }
+        })
+    })
+</script>
