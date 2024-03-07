@@ -17,8 +17,7 @@ urlpatterns = [
     path('actualizarPerfil', views.actualizarPerfil, name='actualizar_perfil'),
     path('actualizarContrasena', views.actualizarContrasena, name='actualizar_contrasena'),
 
-
-    path('', views.inicio, name='inicio'),
+    path('',views.inicio, name='inicio'),
 
     path('sede', views.sede, name='sede-pagina'),
     path('adm_sede', views.adm_sede, name='adm-sede'),

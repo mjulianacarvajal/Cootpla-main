@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-dvjkt5fis7g@&68z@f0@#*m4ubh^pq@-se&-6(7vq1zo%b@e*n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Tre
 
 ALLOWED_HOSTS = ['*']
 
@@ -142,10 +142,6 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR /"media/"
 
 
-##LOGIN
-
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login'
 
 ##Cryptography
 
@@ -156,3 +152,22 @@ ID_ENCRYPTION_KEY = b'UdhnfelTxqj3q6BbPe7H86sfQnboSBzb0irm2atoFUw='
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#configuration
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.googlemail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'gestorcootpla@gmail.com'
+EMAIL_HOST_PASSWORD = 'mzvmlvarziefgdcp'
+EMAIL_USE_TLS = True
+
+#cm wpgflhkodvfqjtym
+# django wpgf lhko dvfq jtym
+
+##LOGIN correo cotpla
+#EMAIL_HOST_USER = 'gestorcootpla@gmail.com'
+#EMAIL_HOST_PASSWORD = 'mzvmlvarziefgdcp'
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
