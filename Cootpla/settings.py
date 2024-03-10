@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-dvjkt5fis7g@&68z@f0@#*m4ubh^pq@-se&-6(7vq1zo%b@e*n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = Tre
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -131,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
@@ -139,7 +139,7 @@ STATICFILES_DIRS = [
 
 ## MEDIA
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR /"media/"
+MEDIA_ROOT = "media/"
 
 
 
@@ -162,12 +162,7 @@ EMAIL_HOST_USER = 'gestorcootpla@gmail.com'
 EMAIL_HOST_PASSWORD = 'mzvmlvarziefgdcp'
 EMAIL_USE_TLS = True
 
-#cm wpgflhkodvfqjtym
-# django wpgf lhko dvfq jtym
-
-##LOGIN correo cotpla
-#EMAIL_HOST_USER = 'gestorcootpla@gmail.com'
-#EMAIL_HOST_PASSWORD = 'mzvmlvarziefgdcp'
+#LOGIN
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login'

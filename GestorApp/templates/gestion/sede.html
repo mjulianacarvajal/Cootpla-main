@@ -17,7 +17,7 @@
 
                 <div class="card-body">
                     <div class="container-fluid table-responsive" >
-                        <table class="table table-bordered" id="sede-list">
+                        <table class="table table-bordered" id="sede-lista">
                             <thead>
                             <tr class="bg-gradient bg-secondary bg-opacity-50 text-light">
                                 <th class="px-2 py-2 text-center">#</th>
@@ -70,7 +70,7 @@
                 _conf("¿Deseas eliminar esta Empresa del sistema?", "eliminar_sede", [$(this).attr('data-id')])
             })
 
-            $('#sede-list').DataTable({
+            $('#sede-lista').DataTable({
                 columnDefs: [{
                     orderable: false,
                     targets: 4
