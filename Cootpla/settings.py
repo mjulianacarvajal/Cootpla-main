@@ -132,16 +132,15 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    ]
-
 ## MEDIA
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = "media/"
 
 
+#LOGIN
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
 
 ##Cryptography
 
@@ -161,8 +160,3 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'gestorcootpla@gmail.com'
 EMAIL_HOST_PASSWORD = 'mzvmlvarziefgdcp'
 EMAIL_USE_TLS = True
-
-#LOGIN
-
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login'

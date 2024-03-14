@@ -1,4 +1,4 @@
-# gestion de usuarios y accesos en inglés: clases y variables propias de las librerias
+
 
 import json
 from datetime import datetime
@@ -25,9 +25,42 @@ from .models import (
     Vehiculo
 )
 
+from django.views.generic import ListView, FormView
+from .forms import FormatForm
+from .admin import ProgramacionResource
+
 context = {
     'page_title': 'Visor de Viajes Intermunicipales || Cootpla',
 }
+
+
+
+#######exportrar####
+
+class ProgramacionListView(ListView, FormView):
+    model = Programacion
+    template_name = 'gestion/programacion.html'
+    form_class = FormatForm
+
+    def post(self, request, **kwargs):
+
+        qs = self.get_queryset()
+        dataset = ProgramacionResource().export(qs)
+        format = request.POST.get('format')
+
+        if format == 'xls':
+            ds = dataset.xls
+        elif format == 'csv':
+            ds = dataset.csv
+        else:
+            ds = dataset.json
+
+        response = HttpResponse(ds, content_type=f"{format}")
+        response['Content-Disposition'] = f"attachment; filename=post.{format}"
+
+        return response
+
+
 
 
 
@@ -54,7 +87,7 @@ def login_user(request):
 
 
 @login_required
-def inicio(request: HttpRequest):
+def inicio(request):
     context['page_title'] = 'Inicio'
     #tabla de contenido o dashboard inicio
     context['encomiendas'] = Encomienda.objects.count()

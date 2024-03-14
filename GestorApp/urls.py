@@ -2,9 +2,12 @@
 from django.urls import path
 from . import views
 
+from .views import ProgramacionListView
+
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
+app_name = 'gestor'
 
 urlpatterns = [
     path('redirect-admin', RedirectView.as_view(url="/admin"), name="redirect-admin"),
@@ -18,6 +21,9 @@ urlpatterns = [
     path('actualizarContrasena', views.actualizarContrasena, name='actualizar_contrasena'),
 
     path('',views.inicio, name='inicio'),
+
+    #exp
+    path('', ProgramacionListView.as_view(), name='programacion'),
 
     path('sede', views.sede, name='sede-pagina'),
     path('adm_sede', views.adm_sede, name='adm-sede'),
