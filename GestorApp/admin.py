@@ -1,57 +1,39 @@
-from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from django.contrib import admin
-from .models import Conductor,Sede, Propietario,Encomienda,Vehiculo,Programacion
+from .models import Conductor,Propietario,Sede, Encomienda,Vehiculo,Programacion
 
 # Register your models here.
-admin.site.register(Sede)
-admin.site.register(Programacion)
-admin.site.register(Encomienda)
-
-class ConductorResource(resources.ModelResource):
-    fields = ('conductor', 'codigo', 'cedula','estado',)
-    class Meta:
-        model = Conductor
-
-    def __str__(self):
-        return str(self.conductor + ' - ' + self.codigo)
-
-    class Meta:
-        verbose_name_plural = 'Conductores'
-
-
-
 @admin.register(Conductor)
 class ConductorAdmin(ImportExportModelAdmin):
-    recourse_class = ConductorResource
     list_display = ('conductor', 'codigo', 'cedula','estado',)
-
-    def admin_conductor(self, obj):
-        return 'Conductores'
-
     search_fields = ('conductor', 'codigo', 'cedula','estado',)
-
-
-class PropietarioResource(resources.ModelResource):
-    fields = ('propietario', 'documento','estado', )
-    class Meta:
-        model = Propietario
-
-    def __str__(self):
-        return str(self.propietario)
-
-    class Meta:
-        verbose_name_plural = 'Propietarios'
-#conductor model recourse
-
 
 @admin.register(Propietario)
 class PropietarioAdmin(ImportExportModelAdmin):
-    recourse_class = PropietarioResource
     list_display =('propietario', 'documento','estado',)
-
-    def admin_propietario(self, obj):
-        return 'Propietarios'
-
     search_fields = ('propietario','documento','estado',)
+
+@admin.register(Sede)
+class SedeAdmin(ImportExportModelAdmin):
+    list_display = ('sede','tipo', 'fecha_creado','fecha_actualizado')
+    list_filter = ['sede','tipo']
+    search_fields = ['sede','tipo']
+
+@admin.register(Vehiculo)
+class VehiculoAdmin(ImportExportModelAdmin):
+    list_display =('propietario','numero_veh','placa_veh','asientos','estado','fecha_creado','fecha_actualizado',)
+    list_filter = ['propietario','numero_veh',]
+    search_fields = ['propietario','numero_veh']
+@admin.register(Programacion)
+class ProgramacionAdmin(ImportExportModelAdmin):
+    list_display = ('codigo','vehiculo', 'conductor', 'origen', 'destino', 'programacion','precio', 'estado','fecha_creado','fecha_actualizado', )
+    list_filter = ['codigo', 'vehiculo', 'origen','destino',]
+    search_fields = ['codigo', 'vehiculo', 'programacion']
+
+@admin.register(Encomienda)
+class EncomiendaAdmin(ImportExportModelAdmin):
+    list_display =('programacion', 'nombre_envio','cedula_envio','cedula_envio','telefono_envio','nombre_recibido',
+                   'cedula_recibido','telefono_recibido','costo_envio','estado','fecha_creado','fecha_actualizado',)
+    list_filter =['programacion','estado',]
+    search_fields =['nombre_envio','cedula_envio','cedula_envio','telefono_envio','nombre_recibido','cedula_recibido','telefono_recibido', 'estado',]
