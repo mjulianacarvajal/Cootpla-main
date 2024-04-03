@@ -2,12 +2,9 @@
 from django.urls import path
 from . import views
 
-from .views import ProgramacionListView
-
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
-app_name = 'gestor'
 
 urlpatterns = [
     path('redirect-admin', RedirectView.as_view(url="/admin"), name="redirect-admin"),
@@ -20,17 +17,15 @@ urlpatterns = [
     path('actualizarPerfil', views.actualizarPerfil, name='actualizar_perfil'),
     path('actualizarContrasena', views.actualizarContrasena, name='actualizar_contrasena'),
 
-    path('',views.inicio, name='inicio'),
 
-    #exp
-    path('', ProgramacionListView.as_view(), name='programacion'),
+    path('', views.inicio, name='inicio'),
 
     path('sede', views.sede, name='sede-pagina'),
     path('adm_sede', views.adm_sede, name='adm-sede'),
     path('guardar_sede', views.guardar_sede, name='guardar-sede'),
     path('adm_sede/<int:pk>', views.adm_sede, name='adm-sede-pk'),
     path('eliminar_sede', views.eliminar_sede, name='eliminar-sede'),
-
+    path('sede_excel', views.sede_excel, name='sede_excel'),
 
    #
     path('vehiculo', views.vehiculo, name='vehiculo-pagina'),
@@ -38,6 +33,7 @@ urlpatterns = [
     path('guardar_vehiculo', views.guardar_vehiculo, name='guardar-vehiculo'),
     path('adm_vehiculo/<int:pk>', views.adm_vehiculo, name='adm-vehiculo-pk'),
     path('eliminar_vehiculo', views.eliminar_vehiculo, name='eliminar-vehiculo'),
+    path('vehiculo_excel', views.vehiculo_excel, name='vehiculo_excel'),
 
    #
     path('programacion', views.programacion, name='programacion-pagina'),
@@ -45,6 +41,7 @@ urlpatterns = [
     path('guardar_programacion',views.guardar_programacion,name='guardar-programacion'),
     path('adm_programacion/<int:pk>',views.adm_programacion,name='adm-programacion-pk'),
     path('eliminar_programacion', views.eliminar_programacion, name='eliminar-programacion'),
+    path('programacion_excel', views.programacion_excel, name='programacion_excel'),
 
     #
     path('encomienda', views.encomienda, name='encomienda-pagina'),
@@ -52,6 +49,7 @@ urlpatterns = [
     path('guardar_encomienda',views.guardar_encomienda,name='guardar-encomienda'),
     path('adm_encomienda/<int:pk>',views.adm_encomienda,name='adm-encomienda-pk'),
     path('eliminar_encomienda', views.eliminar_encomienda, name='eliminar-encomienda'),
+    path('encomienda_excel', views.encomienda_excel, name='encomienda_excel'),
 
     #
     path('viajes_programados',views.viajes_programados,name='viajes-programados-pagina'),

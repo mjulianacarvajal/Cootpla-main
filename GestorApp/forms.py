@@ -6,21 +6,6 @@ from django.contrib.auth.models import User
 from .models import Encomienda, Sede, Vehiculo, Programacion, Conductor
 from datetime import datetime
 
-##### exportar ######
-
-FORMAT_CHOICES = (
-    ('xls', 'xls'),
-    ('csv', 'csv'),
-    ('json', 'json'),
-)
-
-
-class FormatForm(forms.Form):
-    format = forms.ChoiceField(choices=FORMAT_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}))
-
-
-
-
 #usuario
 class RegistrarUsuario(UserCreationForm):
     email = forms.EmailField(max_length=250, help_text="El sistema requiere un correo electrónico para asignar un nuevo usuario.")
@@ -184,7 +169,7 @@ class GuardarProgramacion(forms.ModelForm):
                 codigo = ''
         else:
             codigo = ''
-        pref = datetime.today().strftime('%Y%m%d')   #variable a comparar para validar
+        pref = datetime.today().strftime('%Y%m%d')
         codigo = str(1).zfill(4)
         while True:
             prog = Programacion.objects.filter(codigo=str(pref + codigo)).count()

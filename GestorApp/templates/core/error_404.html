@@ -1,50 +1,48 @@
 {% extends "core/base.html" %}
 {% block Contenido %}
 
-<div class="content-wrapper" style="min-height: 1604.44px; margin-left:0;" xmlns="http://www.w3.org/1999/html">
+<div class="content-wrapper" style="min-height: 1206.44px; margin-left:8px;">
 
-    <div class="content-wrapper" style="min-height: 1206.44px; margin-left:8px;">
-    
-    
-    
-        <section class="content">
-            <div class="error-page">
-                <h1 class="headline text-warning font-weight-bold">404</h1>
-                <div class="error-content">
-                    <h3><i class="fa fa-exclamation-triangle text-w
-                    arning"></i> Advertencia: Página no encontrada.</h3>
-                    <p> <strong> Regrese de nuevo a</strong>
-                        <a href="{% url 'inicio' %}">Inicio</a>.
-                    </p>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Cootransplateña oferta transporte intermunicipal, situad en el suroccidente del departamento del Huila.
-                            </li>
-                        </ol>
-                    </nav>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{% url 'inicio' %}">Inicio</a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'buscar-viaje-programado' %}">Buscar Viaje</a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'viajes-programados-pagina' %}">Viajes Programados</a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'contacto' %}">Contacto</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Para todos nuestros usuarios.</li>
-                        </ol>
-                    </nav>
-                     </br>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{% url 'inicio' %}">Inicio</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Logeo e ingreso de credenciales(Usuarios internos).</li>
-                        </ol>
-                    </nav>
-                </div>
+    <section class="content-header">
+
+    </section>
+
+    <section class="content">
+        <div class="error-page">
+            <h1 class="headline text-warning">404</h1>
+            <div class="error-content">
+                <h3><i class="fa fa-exclamation-triangle text-warning"></i> Advertencia: Página no encontrada.</h3>
+                <p> <strong> No se encontró la página ingresada. Regrese de nuevo a</strong>
+                    <a href="{% url 'inicio' %}"> Inicio </a>.
+                </p>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">Recuerde que el sitio esta diseñado para consultar sobre nuestra programación:</li>
+                    </ol>
+                </nav>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'inicio' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'buscar-viaje-programado' %}">Buscar Viaje</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'viajes-programados-pagina' %}">Viajes Programados</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'contacto' %}">Contacto</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Para todos nuestros usuarios.</li>
+                    </ol>
+                </nav>
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'inicio' %}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Logeo(Usuarios internos).</li>
+                    </ol>
+                </nav>
             </div>
-    
-        </section>
-    
-    </div>
-    
-    </div>
+        </div>
+
+    </section>
+
+</div>
+
+
 
 {% endblock Contenido %}

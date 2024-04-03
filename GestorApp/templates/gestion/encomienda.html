@@ -5,9 +5,13 @@
 
     <div class="container-fluid">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-14 table-responsive">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'encomienda_excel' %}" type="button" class="btn btn-sm btn-dark fa fa-download"> Descargar </a>
+            <li class="breadcrumb-item active">Para obtener una copia, haga click en el botón.</li>
+        </ol>
             <div class="card card-default rounded-0 shadow ">
                <div class="card-header">
-                    <h7>Ingrese las encomiendas que mandan por vehículo despachado</h7>
+                    <h7>Ingrese las encomiendas que mandan por vehículo despachado.</h7>
                     <div class="d-flex w-100 align-items-center justify-content-between">
                         <h4 class="card-title fw-bold text-wrap">Gestión de Encomiendas</h4>
                         <div class="tools">
@@ -21,7 +25,7 @@
                     <table class="table table-bordered" id="encomienda-lista">
                         <thead>
                           <tr class="bg-gradient bg-secondary bg-opacity-50 text-light">
-                            <th class="px-1 py-1 text-center">Despachador</th>
+                            <th class="px-1 py-1 text-center">Facilitador</th>
 
                             <th class="px-1 py-1 text-center">Viaje Programado</th>
                             <th class="px-1 py-1 text-center">Remitente</th>
@@ -36,13 +40,13 @@
 
                             <th class="px-1 py-1 text-center">Acción</th>
                           </tr>
-                        </thead>
+{{ user.username }}                        </thead>
                         <tbody>
                         {% for encomienda in encomiendas %}
 
                         <tr>
-                            <td class="px-2 py-1 align-middle font-weight-bold small">{{ user.username }}</td>
-                            {% comment %}  llamar del modelo programacion.codigo {% endcomment %}
+                           <td class="px-2 py-1 align-middle font-weight-bold small">{{ user.username }}</td>
+
                             <td class="px-1 py-1 align-middle"> <div class="lh-1"> {{ encomienda.programacion }} </div></td>
 
                             <td class="px-2 py-1 align-middle">
@@ -67,7 +71,7 @@
                                     {{ encomienda.get_estado_display }} </span>
                             </td>
                             <td class="px-2 py-1 align-middle text-center">
-                                <a class="btn btn-outline-success btn-sm edit-data" href="javascript:void(0)" data-id="{{ encomienda.pk }}" title="Editar">
+                                <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ encomienda.pk }}" title="Editar">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ encomienda.pk }}" title="Eliminar">
@@ -112,9 +116,9 @@
             },
             drawCallback: function(settings) {
                 $('table td, table th').addClass('px-2 py-1')
-            }
-        })
-    })
+            }, responsive: true
+        }).draw(true).columns.adjust();
+    });
 
     function eliminar_encomienda($id) {
         start_loader();
@@ -148,7 +152,6 @@
                 } else {
                     el.text('An error occurred.')
                     el.show('slow')
-
                 }
                 end_loader()
             }
