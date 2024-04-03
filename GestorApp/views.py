@@ -520,7 +520,7 @@ def programacion_excel(request):
     worksheet.title = 'Listado Programaciones'
 
     # Titulos Columnas
-    #  ultimo en editar (Coordina)
+    #  Llamar al ultimo usuario en editar (Coordina)
     columns = ['ID','Coordina','Conductor','Horario', 'Código', 'Estado', 'Origen', 'Destino', 'Precio', ]
     row_num = 3
 
