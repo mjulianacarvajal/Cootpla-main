@@ -26,9 +26,9 @@
                             <thead>
                             <tr class="bg-gradient bg-secondary bg-opacity-50 text-light">
                                 <th class="px-2 py-2 text-center">#</th>
-                                <th class="px-2 py-2 text-center">Fecha de Creación</th>
                                 <th class="px-2 py-2 text-center">Sede</th>
-                                <th class="px-2 py-2 text-center">Tipo</th>
+                                <th class="px-2 py-2 text-center">TIpo</th>
+                                <th class="px-2 py-2 text-center">Fecha de Creación</th>
                                 <th class="px-2 py-2 text-center">Acción</th>
                             </tr>
                             </thead>
@@ -36,14 +36,15 @@
                             {% for sede in sedes %}
                                 <tr>
                                     <td class="px-2 py-1 align-middle">{{ forloop.counter }}</td>
-                                    <td class="px-2 py-1 align-middle">{{ sede.fecha_creado }}</td>
                                     <td class="px-2 py-1 align-middle">{{ sede.sede }}</td>
-
-                                    <td class="px-1 py-1 align-middle text-center">
-                                <span class="badge {{ semaforo|dict_key:sede.tipo}} bg-gradient rounded-pill px-2">
-                                    {{ sede.get_tipo_display }}
-                                </span>
+                                     <td class="px-1 py-1 align-middle text-center">
+                                    <span class="badge {{ semaforo|dict_key:sede.tipo}} bg-gradient rounded-pill px-2">
+                                        {{ sede.get_tipo_display }}
+                                    </span>
                                     </td>
+                                    <td class="px-2 py-1 align-middle">{{ sede.fecha_creado }}</td>
+
+
 
                                     <td class="px-2 py-1 align-middle text-center">
                                         <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ sede.pk }}" title="Editar">

@@ -6,7 +6,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 
-class Conductor(models.Model): #
+class Conductor(models.Model):
     conductor = models.CharField(max_length=100)
     codigo = models.CharField(max_length=100)
     cedula = models.CharField(max_length=100)
@@ -23,6 +23,7 @@ class Propietario(models.Model):
     propietario = models.CharField(max_length=100)
     documento = models.CharField(max_length=12)
     estado = models.CharField(max_length=2, choices=(('1', 'Activo'), ('2', 'Inactivo')), default=1)
+
 
     def __str__(self):
         return str(self.propietario)

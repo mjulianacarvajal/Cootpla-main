@@ -78,42 +78,7 @@
         </div>
     </div>
     </div>
-    <!--    Gráfico -->
-    <div class="card">
-        <div class="card-title">
-            <h5 class="card-title text-center">Cantidad de asientos por bus disponible</h5>
-         </div>
-        </div>
-        <div class="card-body">
-            <div class="d-flex justify-content-center">
-
-                <div class="col-md-2 align-content-center">
-                    <canvas id="myChart" width="22" height="22"></canvas>
-                    <script>
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                                type: 'pie',
-                                data: {
-                                    datasets: [{
-                                        data: {{ data|safe}},
-                            backgroundColor: [
-                            'rgb(224,18,62)',
-                            'rgb(60,96,57)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgb(75,102,192)',
-                            'rgb(105,114,114)',
-                        ],
-                            borderWidth:2
-                        }],
-                        labels: {{ labels|safe }}
-                        },
-                        });
-                    </script>
-                </div>
-               <div class=""> <br> <span class="badge bg-dark">Vehículos identificadospor Número Interno</span> </div>
-
-            </div>
-        </div>
+    </div>
     </div>
 
     <!--   / Gráfico -->

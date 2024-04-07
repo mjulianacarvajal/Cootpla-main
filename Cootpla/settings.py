@@ -131,13 +131,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    ]
 
 ## MEDIA
-MEDIA_URL = '/media/'
-MEDIA_ROOT = "media/"
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR /"media/"
 
 
-#LOGIN
+##LOGIN
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login'
@@ -152,7 +157,7 @@ ID_ENCRYPTION_KEY = b'UdhnfelTxqj3q6BbPe7H86sfQnboSBzb0irm2atoFUw='
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#configuration
+#Configuration app
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.googlemail.com'

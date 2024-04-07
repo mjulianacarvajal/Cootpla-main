@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-7 col-md-10 col-sm-12 col-xs-12">
+        <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12">
             <div class="card shadow rounded-0">
                 <div class="card-header">
                     <div class="h5 card-title fw-bold text-capitalize">Perfil <strong>{{ user.first_name }} </strong> </div>
@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-8">
                                 <dl>
                                     <dt class="text-muted">Nombre</dt>
                                     <dd class="ps-4 text-dark">{{ user.first_name }} {{ user.last_name }}</dd>
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="d-flex w-100 text-end justify-content-end">
-                            {% if user.username == "admin" %}
+                            {% if user.username == "plateña_admin" or user.username == "rodamiento"%}
                         <a href="{% url 'registrar-usuario' %}" class="btn btn btn-outline-success btn-sm bg-gradient rounded-0 me-2">Registrar nuevo usuario</a>
                             {% endif %}
                         <a href="{% url 'actualizar_contrasena' %}" class="btn btn btn-light border btn-sm bg-gradient rounded-0 me-2">Actualizar contraseña</a>
