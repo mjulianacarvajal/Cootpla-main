@@ -1,14 +1,11 @@
-<<<<<<< Updated upstream
-=======
+
 from import_export import resources
->>>>>>> Stashed changes
+
 from import_export.admin import ImportExportModelAdmin
 
 from django.contrib import admin
 from .models import Conductor,Propietario,Sede, Encomienda,Vehiculo,Programacion
 
-<<<<<<< Updated upstream
-=======
 
 
 class ConductorResource(resources.ModelResource):
@@ -23,15 +20,14 @@ class ConductorResource(resources.ModelResource):
 
         verbose_name_plural = 'Conductores'
 
->>>>>>> Stashed changes
+
 # Register your models here.
 @admin.register(Conductor)
 class ConductorAdmin(ImportExportModelAdmin):
     list_display = ('conductor', 'codigo', 'cedula','estado',)
     search_fields = ('conductor', 'codigo', 'cedula','estado',)
 
-<<<<<<< Updated upstream
-=======
+
 class PropietarioResource(resources.ModelResource):
     fields = ('propietario', 'documento','estado', )
     class Meta:
@@ -44,14 +40,13 @@ class PropietarioResource(resources.ModelResource):
         verbose_name_plural = 'Propietarios'
 
 
->>>>>>> Stashed changes
+
 @admin.register(Propietario)
 class PropietarioAdmin(ImportExportModelAdmin):
     list_display =('propietario', 'documento','estado',)
     search_fields = ('propietario','documento','estado',)
 
-<<<<<<< Updated upstream
-=======
+
 class SedeResource(resources.ModelResource):
     fields = ('conductor', 'codigo', 'cedula','estado',)
     class Meta:
@@ -60,17 +55,14 @@ class SedeResource(resources.ModelResource):
         return str(self.sede + ' - ' + self.tipo)
 
 
->>>>>>> Stashed changes
+
 @admin.register(Sede)
 class SedeAdmin(ImportExportModelAdmin):
     list_display = ('sede','tipo', 'fecha_creado','fecha_actualizado')
     list_filter = ['sede','tipo']
     search_fields = ['sede','tipo']
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 @admin.register(Vehiculo)
 class VehiculoAdmin(ImportExportModelAdmin):
     list_display =('propietario','numero_veh','placa_veh','asientos','estado','fecha_creado','fecha_actualizado',)
