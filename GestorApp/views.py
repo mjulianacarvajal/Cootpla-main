@@ -541,7 +541,7 @@ def programacion_excel(request):
         # Define the data for each cell in the row
 
         # username el ultimo que asigna algun cambio
-        row = [programaciones.id, user.username,programaciones.conductor.conductor, programaciones.programacion.strftime("%Y%m%d - %H:%M:%S"), programaciones.codigo, programaciones.estado,
+        row = [programaciones.id, programaciones.id,programaciones.conductor.conductor, programaciones.programacion.strftime("%Y%m%d - %H:%M:%S"), programaciones.codigo, programaciones.estado,
                programaciones.origen.sede, programaciones.destino.sede, programaciones.precio,]
 
         # Assign the data for each cell of the row
@@ -671,9 +671,9 @@ def encomienda_excel(request):
         row_num += 1
 
         # Define the data for each cell in the row
-        # username el ultimo que asigna algun cambio
+        # username el ultimo que asigna algun cambio pendiente usuario 2
 
-        row = [encomiendas.id,'user.username}','{encomiendas.programacion}', encomiendas.nombre_envio,encomiendas.telefono_envio,encomiendas.cedula_envio,
+        row = [encomiendas.id,encomiendas.id,'{encomiendas.programacion}', encomiendas.nombre_envio,encomiendas.telefono_envio,encomiendas.cedula_envio,
         encomiendas.nombre_recibido,encomiendas.telefono_recibido,encomiendas.cedula_recibido,encomiendas.costo_envio,
         encomiendas.estado, encomiendas.fecha_actualizado.strftime("%Y%m%d - %H:%M:%S"), ]
 
