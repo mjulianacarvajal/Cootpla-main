@@ -7,7 +7,7 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django.core.management import call_command
 
 
-#calibrar despues de entregarlo a 24h   // 'interval', **hours=24**, l19
+
 
 def db_copia():
     with contextlib.suppress(Exception):
