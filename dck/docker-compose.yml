@@ -1,0 +1,25 @@
+ 
+
+# services:
+#   cootpla_01:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       command:  python manage.py runserver 0.0.0.0:8000
+#       target: development
+#       ports:
+#       - "8000:8000"
+#     volumes: 
+#     - ./code
+#     working_dir: /code  
+#     entrypoint: ["sleep", "infinity"]
+    
+
+# services:
+#   app:
+#     build: .
+#     container_name: cootpla_01
+#     command:  python manage.py runserver 0.0.0.0:8000
+#     volumes: /code
+#     ports:
+#       - "8000:8000"
