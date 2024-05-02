@@ -561,8 +561,8 @@ def encomienda(request: HttpRequest):
     semaforo_3 = {
         '1': 'bg-danger',
         '2': 'bg-dark',
-        '3': 'bg-warning',
-        '4': 'bg-succes',
+        '3': 'bg-succes',
+        '4': 'bg-warning',
 
     }
 
@@ -574,25 +574,29 @@ def encomienda(request: HttpRequest):
 
 
 @login_required
-def guardar_encomienda(request):
-     resp = {'status':'failed','msg':''}
-     if request.method == "POST":
-         form= GuardarEncomienda(request.POST)
-         if form.is_valid():
-           form.save()
-           messages.success(request, 'La Encomienda se ha guardado exitosamente.')
-           resp['status'] = 'success'
-
-         else:
-            print("Error")
-     else:
-
-        form= GuardarProgramacion()
-        context ={
-            'form':form
-        }
-
-     return HttpResponse(json.dumps(resp), content_type='application/json')
+def guardar_encomienda(request: HttpRequest):
+    resp = {'status':'failed','msg':''}
+    if request.method == 'POST':
+        if (request.POST['id']).isnumeric():
+           encomienda = Encomienda.objects.get(pk=request.POST['id'])
+        else:
+            encomienda = None
+        if encomienda is None:
+                form = GuardarEncomienda(request.POST)
+        else:
+            form = GuardarEncomienda(request.POST,instance=encomienda)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La Encomienda se ha guardado exitosamente.')
+            resp['status'] = 'success'
+        else:
+            print(form.errors)
+            for fields in form:
+                for error in fields.errors:
+                    resp['msg'] += str(error + "<br>")
+    else:
+        resp['msg'] = 'No se han guardado datos.'
+    return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 
@@ -697,13 +701,13 @@ def buscar_programado(request: HttpRequest):
 
 def viajes_programados(request: HttpRequest):
     if not request.method == 'POST':
-        context['page_title'] = "Viajes Programacions"
+        context['page_title'] = "Viajes Programados"
         programaciones = Programacion.objects.filter(estado=1, programacion__gt=datetime.now()).all()
         context['programaciones'] = programaciones
         context['is_searched'] = False
         context['data'] = {}
     else:
-        context['page_title'] = "Resultados | Viajes Programacions"
+        context['page_title'] = "Resultados | Viajes Programados"
         context['is_searched'] = True
         date = datetime.strptime(request.POST['date'],"%Y-%m-%d").date()
         year= date.strftime('%Y')
