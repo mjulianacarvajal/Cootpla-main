@@ -2,6 +2,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
@@ -76,8 +77,36 @@ class Programacion(models.Model):
     def __str__(self):
         return str(self.codigo + ' - ' + self.vehiculo.numero_veh)
 
+    @property
+    def asientos_disponibles(self):
+        vendido = Venta.objects.filter(Programacion=self).aggregate(Sum('asientos'))['asientos__sum']
+        return self.vehiculo.asientos - vendido
+
     class Meta:
         verbose_name_plural = 'Programaciones'
+
+
+class Venta(models.Model):
+    codigo_compra = models.CharField(max_length=100)
+    comprador = models.CharField(max_length=100)
+    documento = models.CharField(max_length=100, blank=True, null=True)
+    programacion_venta = models.ForeignKey(Programacion, on_delete=models.CASCADE)
+    asientos_compra = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(12)])
+
+    class Estado(models.TextChoices):
+        OK ='1', _('OK')
+        CANCELADO ='0', _('Cancelado')
+    estado = models.CharField(max_length=1, choices=Estado.choices, default=Estado.OK, verbose_name="OK")
+    fecha_creado = models.DateTimeField(default=timezone.now)
+    fecha_actualizado = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.codigo_compra + ' - ' + self.comprador)
+
+    def total_pagado(self):
+        return self.asientos_compra * self.programacion.precio
+
+
 
 class Encomienda(models.Model):
     programacion = models.ForeignKey(Programacion, on_delete=models.CASCADE)

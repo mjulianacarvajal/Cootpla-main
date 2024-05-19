@@ -4,10 +4,9 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, User
 
 from django.contrib.auth.models import User
 
-from .models import Encomienda, Sede, Vehiculo, Programacion, Conductor
+from .models import Encomienda, Sede, Vehiculo, Programacion, Conductor, Venta
 from datetime import datetime
 
-#usuario
 class RegistrarUsuario(UserCreationForm):
     email = forms.EmailField(max_length=250, help_text="El sistema requiere un correo electrónico para asignar un nuevo usuario.")
     first_name = forms.CharField(max_length=250, help_text="El sistema requiere un nombre para completar los datos.")
@@ -85,6 +84,7 @@ class ActualizarPerfil(UserChangeForm):
             return username
         raise forms.ValidationError(f"{user.username} es un nick ya existente en el sistema")
 
+
 #sedes
 
 class GuardarSede(forms.ModelForm):
@@ -149,6 +149,7 @@ class GuardarVehiculo(forms.ModelForm):
         placa_veh = self.cleaned_data['placa_veh']
         return placa_veh.upper()
 
+
 class GuardarProgramacion(forms.ModelForm):
     codigo = forms.CharField(max_length="250")
     programacion = forms.CharField()
@@ -167,6 +168,7 @@ class GuardarProgramacion(forms.ModelForm):
                 programacion = Programacion.objects.get(id=id)
                 return programacion.codigo
             except:
+                
                 codigo = ''
         else:
             codigo = ''
@@ -182,8 +184,45 @@ class GuardarProgramacion(forms.ModelForm):
         return codigo
 
 
+
+## venta
+class GuardarVenta(forms.ModelForm):
+    class Meta:
+        model = Venta
+        fields = ('codigo_compra', 'comprador', 'documento', 'programacion_venta', 'asientos_compra', 'estado',)
+
+
+    def clean_codigo_compra(self):
+        id = self.instance.id if self.instance.id else 0
+        if id > 0:
+            try:
+                venta = Venta.objects.get(id=id)
+                return venta.codigo_compra
+            except:
+                codigo_compra = ''
+        else:
+            codigo_compra = ''
+        pref = datetime.today().strftime('%Y%m%d')
+        codigo = str(1).zfill(4)
+        while True:
+            prog = Venta.objects.filter(codigo_compra=str(pref + codigo_compra)).count()
+            if prog > 0:
+                codigo_compra = str(int(codigo_compra) + 1).zfill(4)
+            else:
+                codigo_compra = str(pref + codigo_compra)
+                break
+        return codigo_compra
+
+
+class CancelarVenta(forms.ModelForm):
+   
+    class Meta:
+        model = Venta
+        fields = ('estado',)
+
+
 class GuardarEncomienda(forms.ModelForm):
-    #programacion = forms.CharField()
+
     class Meta:
         model = Encomienda
         fields = (

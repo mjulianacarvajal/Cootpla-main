@@ -43,6 +43,24 @@ urlpatterns = [
     path('eliminar_programacion', views.eliminar_programacion, name='eliminar-programacion'),
     path('programacion_excel', views.programacion_excel, name='programacion_excel'),
 
+    ###
+
+    path('adm_venta', views.adm_venta, name= 'adm_vender'),
+    path('adm_venta/<int:prefPK>', views.adm_venta, name= 'adm_vender'),
+
+    ##editar
+    path('adm_vender', views.adm_vender, name= 'adm_vender'),
+    path('adm_vender/<int:pk>', views.adm_vender, name= 'adm_vender'),
+
+
+    path('guardar_venta', views.guardar_venta, name= 'guardar_venta'),
+    path('ventas', views.ventas, name= 'venta-pagina'),
+    
+ 
+    path('modal_venta/<int:pk>', views.modal_venta, name= 'modal_venta'),
+    path('eliminar_venta', views.eliminar_venta, name='eliminar-venta'),
+
+
     #
     path('encomienda', views.encomienda, name='encomienda-pagina'),
     path('adm_encomienda', views.adm_encomienda, name='adm-encomienda'),
@@ -52,6 +70,11 @@ urlpatterns = [
     path('encomienda_excel', views.encomienda_excel, name='encomienda_excel'),
 
     #
+
+
+
+
+
     path('viajes_programados',views.viajes_programados,name='viajes-programados-pagina'),
     path('buscar_programado', views.buscar_programado, name='buscar-viaje-programado'),
 

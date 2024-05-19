@@ -1,0 +1,166 @@
+{% extends 'core/base.html' %} {% load humanize %} {% block Contenido %}
+
+
+<div class="container-fluid">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive">
+        <ol class="breadcrumb float-sm-right">
+        {% comment %} <li class="breadcrumb-item"><a href="{% url 'sede_excel' %}" type="button" class="btn btn-sm btn-dark fa fa-download"> Descargar </a>
+        <li class="breadcrumb-item active">Para obtener una copia, haga click en el botón.</li> {% endcomment %}
+         </ol>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="card card-default table-responsive">
+        <div class="card-header">
+            <h7>Acceda aquí para XXX</h7>
+    <div class="d-flex w-100 align-items-center justify-content-between">
+        <h4 class="card-title fw-bold text-wrap">Ventas Realizadas</h4>
+    </div>
+</div>
+<div class="card-body">
+    <div class="container-fluid table-responsive" >
+        <table class="table table-bordered" id="ventas-list">
+
+            <thead>
+                <tr class="bg-gradient bg-secondary bg-opacity-50 text-light">
+                    <th class="px-2 py-2 text-center">Código</th>
+                    <th class="px-2 py-2 text-center">Programación</th>
+                    <th class="px-2 py-2 text-center">Comprador</th>
+                   
+                    <th class="px-2 py-2 text-center">Asientos</th>
+                                 
+                    <th class="px-2 py-2 text-center">Fecha Compra</th>
+                     
+                    <th class="px-2 py-2 text-center">Revisión</th>
+                    <th class="px-2 py-2 text-center">Estado</th>
+             
+                    <th class="px-2 py-2 text-center">Eliminar</th>
+                </tr>
+                </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td align="center">{{venta.codigo_compra}}</td>  
+                    <td align="center">{{venta.programacion_venta }}</td> 
+                    <td "px-2 py-1 align="center"">
+                        <div class="lh-1">
+                        <div>{{venta.comprador}} </div>
+                        <div>{{venta.programacion.programacion|date:"Y-m-d h:i A"}} </div>
+                        <small class="text-muted">{{venta.documento}}</small>
+                        </div>
+                    </td> 
+                    
+                    <td "px-2 py-1 align-middle">
+                        <div class="lh-1">
+                            <div>{{venta.asientos_compra}} </div>
+                            <div>sss </div>
+                    </td>                           
+
+                     </div>
+                    </td> 
+                    <td align="center">{{venta.fecha_creado}}</td>  
+
+
+                    <td class="px-2 py-1 align-middle text-center">
+
+                       <a class="btn btn-outline-secondary btn-sm view-data" href="javascript:void(0)" data-url="#" title="Detalle Venta">
+                            <i class="fa fa-eye"></i>
+                        </a> 
+                        <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ venta.pk }}" title="Editar">
+                            <i class="fa fa-edit"></i>
+                        </a>
+
+
+                    </td> 
+                    <td class="px-1 py-1 align-middle text-center">
+                        {% if ventas.estado == '1' %}
+                        <span class="badge bg-primary bg-gradient rounded-pill px-2">Cancelado</span> {% else %}
+                        <span class="badge bg-success bg-gradient rounded-pill px-2">Ok</span> {% endif %}
+                    </td> 
+
+                        <td class="px-2 py-1 align-middle text-center">    
+                        <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ venta.pk }}" title="Eliminar">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</div>
+
+
+{% endblock Contenido %} {% block ScriptBlock %}
+<script>
+    
+        $(function() {
+           
+            $('.view-data').click(function() {
+                uni_modal('<i class="fa fa-edit"></i> Detalles Venta', $(this).attr('data-url'), 'modal-md')
+            })
+            $('.edit-data').click(function() {
+                uni_modal('<i class="fa fa-edit"></i> Editar Venta', '' + $(this).attr('data-id'), 'modal-md')
+            })
+
+            $('.delete-data').click(function() {
+                _conf("¿Deseas eliminar esta Venta permanentemente del sistema?, "eliminar_venta", [$(this).attr('data-id')])
+            })
+    
+            $('#ventas-list').DataTable({
+                columnDefs: [{
+                    orderable: false,
+                    targets: 7
+                }],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                initComplete: function(settings, json) {
+                    $('table td, table th').addClass('px-2 py-1')
+                },
+                drawCallback: function(settings) {
+                    $('table td, table th').addClass('px-2 py-1')
+                }, responsive: true
+            }).draw(true).columns.adjust();
+        });
+
+        function eliminar_venta($id) {
+            start_loader();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            $.ajax({
+                url: '{% url "eliminar-venta" %}',
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                method: 'POST',
+                data: {
+                    id: $id
+                },
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    el.text('An error occurred.')
+                    el.show('slow')
+                    end_loader()
+                },
+                success: function(resp) {
+                    if (resp.status == 'success') {
+                        location.reload()
+                    } else if (!!resp.msg) {
+                        el.text('An error occurred.')
+                        el.show('slow')
+                    } else {
+                        el.text('An error occurred.')
+                        el.show('slow')
+                    }
+                    end_loader()
+                }
+            })
+        }
+
+</script>
+{% endblock ScriptBlock %}   

@@ -1,0 +1,113 @@
+{% load customfilter %} {% load humanize %}
+<style>
+    #uni_modal .modal-footer {
+        display: none;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Código del Viaje</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.programacion.codigo }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Vehículo Programado</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.programacion.vehiculo }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Programacion Viaje</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.programacion.programacion|date:"M d, Y h:i A" }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Código Venta</b>
+        </div>
+        <div class="col-7 border px-2">{{venta.codigo_compra }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Comprador</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.comprador }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Documento</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.documento }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Asientos</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.asientos_compra }}</div>
+    </div>
+    <div class="d-flex w-100">
+        <div class="col-5 border">
+            <b>Total Pagado</b>
+        </div>
+        <div class="col-7 border px-2">{{ venta.total_pagado }}</div>
+    </div>
+    <div class="clear-fix py-3"></div>
+    <div class="text-end">
+        {% if venta.estado == '0' %}
+        <button class="btn btn-success border-succes bg-gradient rounded-0 btn-sm" type="button" id="cancelar">Cancelar</button> {% endif %}
+        <button class="btn btn-default border bg-gradient rounded-0 btn-sm" type="button" data-bs-dismiss="modal">Cerrar</button>
+    </div>
+</div>
+
+
+</div>
+<script>
+    $(function() {
+        $('#cancelar').click(function() {
+            _conf("Estas seguro de cancelar esta venta?", 'paid')
+        })
+    })
+    function cancelar() {
+        start_loader();
+        var _this = $(this)
+        $('.err-msg').remove();
+        var el = $('<div>')
+        el.addClass("alert alert-danger err-msg")
+        el.hide()
+        $.ajax({
+            url: '{% url "modal_venta" %}',
+            headers: {
+                'X-CSRFToken': "{{csrf_token}}"
+            },
+            method: 'POST',
+            data: {
+                id: '{{ venta.pk }}',
+                status: 0
+            },
+            dataType: 'json',
+            error: err => {
+                console.log(err)
+                el.text('An error occurred.')
+                el.show('slow')
+                end_loader()
+            },
+            success: function(resp) {
+                if (resp.status == 'success') {
+                    location.reload()
+                } else if (!!resp.msg) {
+                    el.text('An error occurred.')
+                    el.show('slow')
+                } else {
+                    el.text('An error occurred.')
+                    el.show('slow')
+                }
+                end_loader()
+            }
+        })
+    }
+
+</script>    

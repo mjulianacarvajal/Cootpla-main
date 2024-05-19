@@ -21,11 +21,11 @@ from django.shortcuts import redirect, render
 from .forms import (
     ActualizarContrasena, ActualizarPerfil, GuardarEncomienda,
     GuardarProgramacion, GuardarSede, GuardarVehiculo,
-    RegistrarUsuario
+    RegistrarUsuario,GuardarVenta
 )
 from .models import (
     Conductor, Encomienda, Programacion, Propietario, Sede,
-    Vehiculo
+    Vehiculo,Venta
 )
 
 from openpyxl import *
@@ -554,6 +554,122 @@ def programacion_excel(request):
     workbook.save(response)
     return response
 
+
+
+def adm_venta(request, prefPK=None, pk=None):
+    context['page_title'] = "Gestión de Ventas"
+    context['prefPK'] = prefPK
+    if not prefPK is None:
+        programacion = Programacion.objects.get(id = prefPK)
+        context['programacion'] = programacion
+    else:
+        context['programacion'] = {}    
+
+    if not pk is None:
+        venta = Venta.objects.get(id = pk)
+        context['venta'] =venta
+    else:
+
+        context['venta'] = {}
+
+
+    return render(request, 'adm_vender.html', context)
+
+
+def adm_vender(request, pk=None):
+    context['page_title'] = "Editar Ventas"
+    if not pk is None:
+        venta = Venta.objects.get(id = pk)
+        context['venta'] = venta
+    else:
+        context['venta'] = {}
+
+    return render(request, 'adm_vender.html', context)
+
+
+def guardar_venta(request: HttpRequest):
+    resp = {'status':'failed','msg':''}
+    if request.method == 'POST':
+        if (request.POST['id']).isnumeric():
+            venta = Venta.objects.get(pk=request.POST['id'])
+        else:
+            venta = None
+        if venta is None:
+                form = GuardarVenta(request.POST)
+        else:
+            form = GuardarVenta(request.POST,instance=venta) 
+
+        if form.is_valid():
+            form.save()
+            if venta is None:
+                venta = Venta.objects.last()
+                messages.success(request, f'Booking has been saved successfully. Your Booking Refderence Code is: <b>{venta.codigo_compra}</b>', extra_tags = 'stay')
+            else:
+                messages.success(request, f'<b>{venta.codigo_compra}</b> Booking has been updated successfully.')
+            resp['status'] = 'success'
+        else:
+            for fields in form:
+                for error in fields.errors:
+                    resp['msg'] += str(error + "<br>")
+
+    else:
+         resp['msg'] = 'No data has been sent.'
+    return HttpResponse(json.dumps(resp), content_type = 'application/json')
+           
+def ventas(request):
+    context['page_title'] = "Ventas"
+    ventas = Venta.objects.all()
+    context['ventas'] = ventas
+
+    return render(request,'gestion/ventas.html', context)
+
+
+def modal_venta(request:HttpRequest,pk=None):
+    if pk is None:
+        messages.error(request, "Venta Desconocida")
+        return redirect('modal_venta')
+    else:
+        context['page_title'] = 'Ver Venta'
+        context['venta'] = Venta.objects.get(id = pk)
+        return render(request, 'ver_venta.html', context)
+    
+
+def cancelar_venta(request:HttpRequest):
+    resp = {'status':'failed','msg':''}
+    if not request.method == 'POST':
+        resp['msg'] = "Unknown Booked ID"
+    else:
+        venta = Venta.objects.get(id= request.POST['id'])
+        form = CancelarVenta(request.POST, instance=venta)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"<b>{venta.codigo_compra}</b> has been paid successfully", extra_tags='stay')
+            resp['status'] = 'success'
+        else:
+            for field in form:
+                for error in field.errors:
+                    resp['msg'] += str(error + "<br>")    
+    
+    return HttpResponse(json.dumps(resp),content_type = 'application/json')
+
+def eliminar_venta(request):
+    resp = {'status':'failed', 'msg':''}
+
+    if request.method == 'POST':
+        try:
+            venta = Venta.objects.get(id = request.POST['id'])
+            codigo_compra = venta.codigo_compra
+            venta.delete()
+            messages.success(request, f'[<b>{code}</b>] Booking has been deleted successfully')
+            resp['status'] = 'success'
+        except Exception as err:
+            resp['msg'] = 'booking has failed to delete'
+            print(err)
+
+    else:
+        resp['msg'] = 'booking has failed to delete'
+    
+    return HttpResponse(json.dumps(resp), content_type="application/json")  
 
 
 @login_required

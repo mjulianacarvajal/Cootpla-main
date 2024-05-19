@@ -1,0 +1,131 @@
+{% comment %} 
+booking  vender
+book    venta
+booked  vendido
+{% endcomment %}
+
+{% load customfilter %}
+{% load humanize %}
+
+
+
+<div class="container-fluid">
+    <form action=" " id="venta-form">
+        {% csrf_token %}
+
+        <input type="hidden" name="id" value="{{ venta.id }}">
+        <input type="hidden" name="codigo_compra" value="1">
+        <input type="hidden" name="programacion" value="{{ programacion.id }}">
+    
+        <div class="form-group mb-3">
+            <label for="comprador" class="control-label">Comprador</label>
+            <input class="form-control rounded-0" name="comprador" id="comprador" type="text" value="{{ venta.comprador }}" required>
+        </div>    
+
+        <div class="form-group mb-3">
+            <label for="asientos_compra" class="control-label">Asientos</label>
+            <input class="form-control rounded-0" name="asientos_compra" id="asientos_compra" max="{{programacion.asientos_disponibles }}" type="number" value="{{ venta.asientos_compra }}" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="fare" class="control-label">Fare</label>
+            <input class="form-control rounded-0 text-end" id="fare" type="text" value="{{ programacion.precio }}" disabled>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="pagar" class="control-label">Total a Pagar</label>
+            <input class="form-control rounded-0 text-end" id="pagar" type="text" value="{% if venta.total_pagado %}{{ venta.total_pagado }}{% else %}0.00{% endif %}" disabled>
+        </div>
+
+        </div>
+    </form>
+</div>        
+
+<script>
+    $(function() {
+        $('#asientos_compra').on('input change', function() {
+            var precio = $('#precio').val();
+            precio = precio.replace(/'/gi, '');
+            var asientos_compra = $(this).val();
+            
+            // Verifica que los datos sean números válidos
+            if (!isNaN(parseFloat(precio)) && !isNaN(parseFloat(asientos_compra))) {
+                var total = parseFloat(precio) * parseFloat(asientos_compra);
+                total = total > 0 ? total : 0;
+                
+                $('#pagar').val(total.toLocaleString('es-CO'));
+              
+            } else {
+                // Manejar el caso en el que los datos no sean números válidos
+                console.log('Por favor ingrese números válidos para el precio y los asientos comprados.');
+            }
+        })
+
+        $('#venta').select2({
+            width:"100%",
+            placeholder: "Please Select Category Here",
+            dropdownParent:$('#uni_modal')
+        })
+
+                {% comment %} 
+        $('#asientos_compra').on('input change',function(){
+            var precio = $('#precio').val()
+            precio = precio.replace(/'/gi,'')
+            var asientos_compra = $(this).val()
+            var total = parseFloat(fare) * parseFloat(asientos_compra)
+            total = total > 0 ? total :0
+            $('#payable').val(parseFloat(total).toLocaleString('en-US')) {% endcomment %}
+
+        $('#venta-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                    _this[0].reportValidity();
+                    return false;
+                }
+                
+        start_loader();
+
+        $.ajax({
+            url: "{% url 'guardar_venta' %}",  {% comment %}  save-book {% endcomment %}
+            data: new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            dataType: 'json',
+            error: err => {
+                console.log(err)
+                alert("An error occured ", 'error');
+                end_loader();
+            },
+
+
+
+            success: function(resp) {
+                if (typeof resp == 'object' && resp.status == 'success') {
+                    el.removeClass("alert alert-danger err-msg ")
+                    location.reload()
+                } else if (resp.status == 'failed' && !!resp.msg) {
+                    el.html(resp.msg)
+                } else {
+                    el.text("An error occured ", 'error');
+                    end_loader();
+                    console.err(resp)
+                }
+                _this.prepend(el)
+                el.show('slow')
+                $("html, body, .modal ").scrollTop(0);
+                end_loader()
+            }
+        })
+    })
+
+
+    })
+</script>
